@@ -1,0 +1,4 @@
+{
+  "RCLONE_CONFIG_PASS": "your_master_password_here",
+  "RCLONE_REMOTE": "gdrive:/MyTermuxBackups/"
+}
