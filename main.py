@@ -57,7 +57,7 @@ def upload_to_drive(target_path):
 if __name__ == "__main__":
     # Ensure the user provided a file or folder path
     if len(sys.argv) < 2:
-        print("Usage: python upload.py /path/to/your/file_or_folder")
+        print("Usage: python main.py /path/to/your/file_or_folder")
         sys.exit(1)
         
     upload_to_drive(sys.argv[1])

@@ -5,11 +5,9 @@ This will upload file(s) or folder via rclone to any cloud storage (eg. google d
 ## Commands
 
 ```bash
-python upload.py /path/to/your/folder/hashes.sha256
+python main.py /path/to/your/folder/hashes.sha256
 ```
-
 
 ```bash
 python upload.py /path/to/your/folder
 ```
-
