@@ -25,16 +25,21 @@ else:
     print("Warning: config.json not found. Using default settings.")
 # -------------------------------
 
+def log_print(msg):
+    print(msg)
+    with open(LOG_FILE, "a") as f:
+        f.write(msg + "\n")
+
 def upload_to_drive(target_path, no_limit=False):
     target = Path(target_path).resolve()
     
     if not target.exists():
-        print(f"Error: The path '{target}' does not exist.")
+        log_print(f"Error: The path '{target}' does not exist.")
         sys.exit(1)
 
-    print(f"Starting secure upload for: {target.name}")
-    print(f"Destination: {RCLONE_REMOTE}")
-    print(f"Logging to: {LOG_FILE} (Monitor using: tail -f {LOG_FILE})")
+    log_print(f"Starting secure upload for: {target.name}")
+    log_print(f"Destination: {RCLONE_REMOTE}")
+    log_print(f"Logging to: {LOG_FILE} (Monitor using: tail -f {LOG_FILE})")
 
     # Securely inject the password into the environment variables
     # so it never appears in command line logs
@@ -48,7 +53,8 @@ def upload_to_drive(target_path, no_limit=False):
         RCLONE_REMOTE, 
         "-P",
         "--log-file", str(LOG_FILE),
-        "--log-level", "INFO"
+        "--log-level", "INFO",
+        "--stats", "5s"
     ]
     
     if not no_limit:
@@ -56,11 +62,11 @@ def upload_to_drive(target_path, no_limit=False):
     
     try:
         subprocess.run(upload_cmd, env=env, check=True)
-        print("-" * 40)
-        print("Upload successfully completed!")
+        log_print("-" * 40)
+        log_print("Upload successfully completed!")
     except subprocess.CalledProcessError:
-        print("-" * 40)
-        print("Error: Failed to upload. Check your config.json, password, or connection.")
+        log_print("-" * 40)
+        log_print("Error: Failed to upload. Check your config.json, password, or connection.")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Upload files via rclone.")
