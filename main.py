@@ -53,8 +53,7 @@ def upload_to_drive(target_path, no_limit=False):
         RCLONE_REMOTE, 
         "-P",
         "--log-file", str(LOG_FILE),
-        "--log-level", "INFO",
-        "--stats", "5s"
+        "--log-level", "INFO"
     ]
     
     if not no_limit:
