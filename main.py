@@ -2,6 +2,7 @@ import sys
 import os
 import json
 import subprocess
+import argparse
 from pathlib import Path
 
 # --- LOAD NATIVE JSON CONFIG ---
@@ -23,7 +24,7 @@ else:
     print("Warning: config.json not found. Using default settings.")
 # -------------------------------
 
-def upload_to_drive(target_path):
+def upload_to_drive(target_path, no_limit=False):
     target = Path(target_path).resolve()
     
     if not target.exists():
@@ -43,8 +44,11 @@ def upload_to_drive(target_path):
         "rclone", "copy", 
         str(target), 
         RCLONE_REMOTE, 
-        "-P" 
+        "-P"
     ]
+    
+    if not no_limit:
+        upload_cmd.extend(["--bwlimit", "1M"])
     
     try:
         subprocess.run(upload_cmd, env=env, check=True)
@@ -55,9 +59,9 @@ def upload_to_drive(target_path):
         print("Error: Failed to upload. Check your config.json, password, or connection.")
 
 if __name__ == "__main__":
-    # Ensure the user provided a file or folder path
-    if len(sys.argv) < 2:
-        print("Usage: python main.py /path/to/your/file_or_folder")
-        sys.exit(1)
-        
-    upload_to_drive(sys.argv[1])
+    parser = argparse.ArgumentParser(description="Upload files via rclone.")
+    parser.add_argument("path", help="/path/to/your/file_or_folder")
+    parser.add_argument("--no-limit", action="store_true", help="Remove the 1MBps bandwidth limit")
+    
+    args = parser.parse_args()
+    upload_to_drive(args.path, args.no_limit)
