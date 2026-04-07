@@ -1,6 +1,6 @@
 ## RClone Upload
 
-This will upload file(s) or folder via rclone to any cloud storage (eg. google drive) with a 1MBps bandwidth limit.
+This will upload file(s) or folder via rclone to any cloud storage (eg. google drive) with a default 1MBps bandwidth limit.
 
 ## Commands
 
@@ -16,4 +16,10 @@ To run without the 1MBps limit, use the `--no-limit` flag:
 
 ```bash
 python main.py /path/to/your/folder --no-limit
+```
+
+To run with custom limit, use `--limit` flag:
+
+```bash
+python main.py /path/to/your/folder --limit 2M
 ```

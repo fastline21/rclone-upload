@@ -30,7 +30,7 @@ def log_print(msg):
     with open(LOG_FILE, "a") as f:
         f.write(msg + "\n")
 
-def upload_to_drive(target_path, no_limit=False):
+def upload_to_drive(target_path, no_limit=False, limit="1M"):
     target = Path(target_path).resolve()
     
     if not target.exists():
@@ -57,7 +57,7 @@ def upload_to_drive(target_path, no_limit=False):
     ]
     
     if not no_limit:
-        upload_cmd.extend(["--bwlimit", "1M"])
+        upload_cmd.extend(["--bwlimit", limit])
     
     try:
         subprocess.run(upload_cmd, env=env, check=True)
@@ -70,7 +70,8 @@ def upload_to_drive(target_path, no_limit=False):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Upload files via rclone.")
     parser.add_argument("path", help="/path/to/your/file_or_folder")
-    parser.add_argument("--no-limit", action="store_true", help="Remove the 1MBps bandwidth limit")
+    parser.add_argument("--no-limit", action="store_true", help="Remove the bandwidth limit")
+    parser.add_argument("--limit", type=str, default="1M", help="Set the bandwidth limit (default: 1M)")
     
     args = parser.parse_args()
-    upload_to_drive(args.path, args.no_limit)
+    upload_to_drive(args.path, args.no_limit, args.limit)
