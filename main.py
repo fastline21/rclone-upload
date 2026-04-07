@@ -9,6 +9,7 @@ from pathlib import Path
 CONFIG_FILE = Path("config.json")
 RCLONE_PASS = ""
 RCLONE_REMOTE = "gdrive:/MyTermuxBackups/" # Default fallback just in case
+LOG_FILE = Path("upload.log")
 
 # Read the config file natively without any external packages
 if CONFIG_FILE.exists():
@@ -33,6 +34,7 @@ def upload_to_drive(target_path, no_limit=False):
 
     print(f"Starting secure upload for: {target.name}")
     print(f"Destination: {RCLONE_REMOTE}")
+    print(f"Logging to: {LOG_FILE} (Monitor using: tail -f {LOG_FILE})")
 
     # Securely inject the password into the environment variables
     # so it never appears in command line logs
@@ -44,7 +46,9 @@ def upload_to_drive(target_path, no_limit=False):
         "rclone", "copy", 
         str(target), 
         RCLONE_REMOTE, 
-        "-P"
+        "-P",
+        "--log-file", str(LOG_FILE),
+        "--log-level", "INFO"
     ]
     
     if not no_limit:
