@@ -30,15 +30,18 @@ def log_print(msg):
     with open(LOG_FILE, "a") as f:
         f.write(msg + "\n")
 
-def upload_to_drive(target_path, no_limit=False, limit="1M"):
+def upload_to_drive(target_path, destination_path="", no_limit=False, limit="1M"):
     target = Path(target_path).resolve()
     
     if not target.exists():
         log_print(f"Error: The path '{target}' does not exist.")
         sys.exit(1)
 
+    if not destination_path:
+        destination_path = RCLONE_REMOTE
+
     log_print(f"Starting secure upload for: {target.name}")
-    log_print(f"Destination: {RCLONE_REMOTE}")
+    log_print(f"Destination: {destination_path}")
     log_print(f"Logging to: {LOG_FILE} (Monitor using: tail -f {LOG_FILE})")
 
     # Securely inject the password into the environment variables
@@ -69,9 +72,10 @@ def upload_to_drive(target_path, no_limit=False, limit="1M"):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Upload files via rclone.")
-    parser.add_argument("path", help="/path/to/your/file_or_folder")
+    parser.add_argument("source", help="/path/to/your/file_or_folder")
+    parser.add_argument("--destination", default="", help="/path/to/your/file_or_folder")
     parser.add_argument("--no-limit", action="store_true", help="Remove the bandwidth limit")
     parser.add_argument("--limit", type=str, default="1M", help="Set the bandwidth limit (default: 1M)")
     
     args = parser.parse_args()
-    upload_to_drive(args.path, args.no_limit, args.limit)
+    upload_to_drive(args.source, args.destination, args.no_limit, args.limit)
