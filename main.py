@@ -53,7 +53,7 @@ def upload_to_drive(target_path, destination_path="", no_limit=False, limit="1M"
     upload_cmd = [
         "rclone", "copy", 
         str(target), 
-        RCLONE_REMOTE, 
+        destination_path, 
         "-P",
         "--log-file", str(LOG_FILE),
         "--log-level", "INFO"
